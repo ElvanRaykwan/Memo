@@ -27,31 +27,43 @@ public class MainActivity extends AppCompatActivity {
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         // create a Button
-        Button myButton = new Button(this);  // create a new Button
+        final Button myButton = new Button(this);  // create a new Button
         myButton.setId(id);
         id++;
         myButton.setText("Add"); // set Text in the Button
         myButton.setLayoutParams(btnParam); // set defined layout params to Button
         myButton.setTextColor(Color.WHITE); // set white color for the text of Button
         relativeLayout.addView(myButton);
+        myButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // display a toast on Button click
+                Toast.makeText(getApplicationContext(), "Button "+myButton.getId()+ " Clicked", Toast.LENGTH_LONG).show();
+                addButton();
+            }
+        });
+    }
 
+    public void addButton(){
         // set the layout params for Button
         RelativeLayout.LayoutParams buttonParam = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         Button myButton = new Button(this);  // create a new Button
-        myButton.setText("Dynamic Button2"); // set Text in the Button
+        myButton.setText("Add"); // set Text in the Button
         myButton.setLayoutParams(buttonParam); // set defined layout params to Button
         myButton.setTextColor(Color.WHITE); // set white color for the text of Button
-        myButton.setBackgroundColor(Color.parseColor("#95C03C")); // set Button's background color
-        buttonParam.addRule(RelativeLayout.BELOW, 1); // set Button to the below of ImageView
+        buttonParam.addRule(RelativeLayout.BELOW, id-1); // set Button to the below of ImageView
+        myButton.setId(id);
+        id++;
         relativeLayout.addView(myButton); // add Button in RelativeLayout
         // perform setOnClickListener event
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // display a toast on Button click
-                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Button "+id+ " Clicked", Toast.LENGTH_LONG).show();
+                addButton();
             }
         });
     }
