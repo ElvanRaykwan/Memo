@@ -35,8 +35,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NoteHo
     public void onBindViewHolder(NoteHolder holder, int position) {
         Note note = getNote(position);
         if(note != null){
-        holder.noteContent.setText(note.getContent());
-        holder.noteDate.setText(MemoRandomUtilities.DateFormatting(note.getDate()));}
+        holder.noteContent.setText(note.getNoteContent());
+        holder.noteDate.setText(MemoRandomUtilities.DateFormatting(note.getNoteDate()));}
     }
 
     // total number of rows

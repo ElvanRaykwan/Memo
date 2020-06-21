@@ -5,11 +5,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Database;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.icu.lang.UCharacter;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,14 +32,14 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
-    EditText editText1;
-    int id = 1;
-    RecyclerAdapter adapter;
-    RecyclerView recyclerView;
-    ArrayList<Note> notes;
+    private EditText editText1;
+    private RecyclerAdapter adapter;
+    private RecyclerView recyclerView;
+    private ArrayList<Note> notes;
+    private DatabaseAccess dao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
+
         //FAB
-        loadNotes();
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,20 +64,23 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        dao = MemoDatabase.getInstance(this).notesDao();
+        loadNotes();
+
 
     }
 
     private void loadNotes() {
         this.notes = new ArrayList<Note>();
-        for (int i  = 0; i<12; i++){
-            notes.add(new Note("Test",new Date().getTime()));
-        }
+        List<Note> tempList = dao.getNotes();
+        this.notes.addAll(tempList);
 
         adapter = new RecyclerAdapter(this,notes);
         recyclerView.setAdapter(adapter);
     }
 
     private void onAddNewNote() {
+        startActivity(new Intent(this, NoteEditorActivity.class)); //go to note editor activity
         if (notes!=null){
             notes.add(new Note("test",new Date().getTime()));
         }
@@ -85,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public void Save(String fileName) {
+    public void save(String fileName) {
         try {
             OutputStreamWriter saveData =
                     new OutputStreamWriter(openFileOutput(fileName, 0));
@@ -98,14 +104,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean CheckFile(String fileName){
+    public boolean checkFile(String fileName){
         File file = getBaseContext().getFileStreamPath(fileName);
         return file.exists();
     }
 
-    public String Load(String fileName) {
+    public String load(String fileName) {
         String fileContent = "";
-        if (CheckFile(fileName)) {
+        if (checkFile(fileName)) {
             try {
                 InputStream loadData = openFileInput(fileName);
                 if ( loadData != null) {
