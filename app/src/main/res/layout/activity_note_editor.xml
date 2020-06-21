@@ -15,8 +15,8 @@
         android:layout_height="match_parent"
         android:inputType="textMultiLine"
         android:hint="Type Here"
+        android:layout_margin="5dp"
         android:ems="10"
-        android:background="@color/colorPrimary"
         android:gravity="top"
         android:layout_gravity="top"/>
 </RelativeLayout>
