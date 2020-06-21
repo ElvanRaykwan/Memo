@@ -10,6 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+/*
+a class that handles recycler view, a new version of ListView. Format the notes into presentable
+sections
+*/
+
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NoteHolder> {
 
     private ArrayList<Note> notes;
@@ -22,46 +27,45 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NoteHo
         this.notes = data;
     }
 
-    // inflates the row layout from xml when needed
+    // inflates the layout for the row from xml
     @Override
     public NoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        //uses memo_layout.xml as a template, each row is structured by this xml
         View view = LayoutInflater.from(context).inflate(R.layout.memo_layout,parent,false);
         return new NoteHolder(view);
     }
 
-    // binds the data to the TextView in each row
+    // binds the data to the TextView as well as Date in each row
     @Override
     public void onBindViewHolder(NoteHolder holder, int position) {
-        final Note note = getNote(position);
+        final Note note = getNote(position); //get the note object
         if(note != null){
-        holder.noteContent.setText(note.getNoteContent());
-        holder.noteDate.setText(MemoRandomUtilities.DateFormatting(note.getNoteDate()));
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                noteEvent.onNoteClick(note);
-            }
-        });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                noteEvent.onNoteLongClick(note);
-                return false;
-            }
-        });
+            holder.noteContent.setText(note.getNoteContent());
+            holder.noteDate.setText(MemoRandomUtilities.dateFormatting(note.getNoteDate()));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    noteEvent.onNoteClick(note);
+                }
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    noteEvent.onNoteLongClick(note);
+                    return false;
+                }
+            });
         }
 
     }
 
-    // total number of rows
+    // total number of rows. returns row size
     @Override
     public int getItemCount() {
         return notes.size();
     }
 
-    private Note getNote(int pos){
-        return notes.get(pos);
-    }
+
 
 
     // stores and recycles views as they are scrolled off screen
@@ -78,6 +82,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NoteHo
         @Override
         public void onClick(View view) {
         }
+    }
+
+    //getter and setter
+    private Note getNote(int pos){
+        return notes.get(pos);
     }
 
     public void setListener(NoteEventListener event){
