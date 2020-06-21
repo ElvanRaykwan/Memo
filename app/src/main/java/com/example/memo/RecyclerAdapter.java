@@ -8,49 +8,57 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NoteHolder> {
 
-    private List<String> mData;
-    private LayoutInflater mInflater;
+    private ArrayList<Note> notes;
     private ItemClickListener mClickListener;
+    private Context context;
 
     // data is passed into the constructor
-    RecyclerAdapter(Context context, List<String> data) {
-        this.mInflater = LayoutInflater.from(context);
-        this.mData = data;
+    RecyclerAdapter(Context context, ArrayList<Note> data) {
+        this.context = context;
+        this.notes = data;
     }
 
     // inflates the row layout from xml when needed
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.recycler_view_row, parent, false);
-        return new ViewHolder(view);
+    public NoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.memo_layout,parent,false);
+        return new NoteHolder(view);
     }
 
     // binds the data to the TextView in each row
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        String animal = mData.get(position);
-        holder.myTextView.setText(animal);
+    public void onBindViewHolder(NoteHolder holder, int position) {
+        Note note = getNote(position);
+        if(note != null){
+        holder.noteContent.setText(note.getContent());
+        holder.noteDate.setText(MemoRandomUtilities.DateFormatting(note.getDate()));}
     }
 
     // total number of rows
     @Override
     public int getItemCount() {
-        return mData.size();
+        return notes.size();
+    }
+
+    private Note getNote(int pos){
+        return notes.get(pos);
     }
 
 
     // stores and recycles views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView myTextView;
+    public class NoteHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView noteContent;
+        TextView noteDate;
 
-        ViewHolder(View itemView) {
+        NoteHolder(View itemView) {
             super(itemView);
-            myTextView = itemView.findViewById(R.id.tvAnimalName);
-            itemView.setOnClickListener(this);
+            noteContent=itemView.findViewById(R.id.memo_content);
+            noteDate=itemView.findViewById(R.id.memo_date);
         }
 
         @Override
@@ -59,10 +67,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         }
     }
 
-    // convenience method for getting data at click position
-    String getItem(int id) {
-        return mData.get(id);
-    }
+
 
     // allows clicks events to be caught
     void setClickListener(ItemClickListener itemClickListener) {

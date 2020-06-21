@@ -1,6 +1,7 @@
 package com.example.memo;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,42 +18,70 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
 
-public class MainActivity extends AppCompatActivity implements RecyclerAdapter.ItemClickListener {
+public class MainActivity extends AppCompatActivity {
 
-    RelativeLayout relativeLayout;
     EditText editText1;
     int id = 1;
     RecyclerAdapter adapter;
+    RecyclerView recyclerView;
+    ArrayList<Note> notes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // get the reference of RelativeLayout
-        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
-        ArrayList<String> animalNames = new ArrayList<>();
-        animalNames.add("Horse");
-        animalNames.add("Cow");
-        animalNames.add("Camel");
-        animalNames.add("Sheep");
-        animalNames.add("Goat");
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // set up the RecyclerView
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        adapter = new RecyclerAdapter(this, animalNames);
-        //adapter.setClickListener(this);
-        recyclerView.setAdapter(adapter);
+        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
+        //FAB
+        loadNotes();
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onAddNewNote();
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
         //addButton();
+    }
+
+    private void loadNotes() {
+        this.notes = new ArrayList<Note>();
+        for (int i  = 0; i<12; i++){
+            notes.add(new Note("Test",new Date().getTime()));
+        }
+
+        adapter = new RecyclerAdapter(this,notes);
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void onAddNewNote() {
+        if (notes!=null){
+            notes.add(new Note("test",new Date().getTime()));
+        }
+        if(adapter!=null){
+            adapter.notifyDataSetChanged();
+        }
     }
 
     public void addButton(){
@@ -72,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.I
                 if(id>1) {
                     buttonParam.addRule(RelativeLayout.BELOW, id - 2); // set Button to the below of ImageView
                 }
-                relativeLayout.addView(myButton); // add Button in RelativeLayout
+                //relativeLayout.addView(myButton); // add Button in RelativeLayout
                 // perform setOnClickListener event
                 myButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -127,9 +156,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.I
     }
 
     @Override
-    public void onItemClick(View view, int position) {
-        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+    protected void onResume() {
+        super.onResume();
+        loadNotes();
     }
+
+    //    @Override
+//    public void onItemClick(View view, int position) {
+//        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+//   }
 }
 
 
