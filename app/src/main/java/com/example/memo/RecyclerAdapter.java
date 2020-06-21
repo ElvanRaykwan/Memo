@@ -9,13 +9,12 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NoteHolder> {
 
     private ArrayList<Note> notes;
-    private ItemClickListener mClickListener;
     private Context context;
+    private NoteEventListener noteEvent;
 
     // data is passed into the constructor
     RecyclerAdapter(Context context, ArrayList<Note> data) {
@@ -33,10 +32,25 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NoteHo
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(NoteHolder holder, int position) {
-        Note note = getNote(position);
+        final Note note = getNote(position);
         if(note != null){
         holder.noteContent.setText(note.getNoteContent());
-        holder.noteDate.setText(MemoRandomUtilities.DateFormatting(note.getNoteDate()));}
+        holder.noteDate.setText(MemoRandomUtilities.DateFormatting(note.getNoteDate()));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                noteEvent.onNoteClick(note);
+            }
+        });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                noteEvent.onNoteLongClick(note);
+                return false;
+            }
+        });
+        }
+
     }
 
     // total number of rows
@@ -63,19 +77,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NoteHo
 
         @Override
         public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
         }
     }
 
-
-
-    // allows clicks events to be caught
-    void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
-    }
-
-    // parent activity will implement this method to respond to click events
-    public interface ItemClickListener {
-        void onItemClick(View view, int position);
+    public void setListener(NoteEventListener event){
+        this.noteEvent = event;
     }
 }
