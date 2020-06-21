@@ -57,26 +57,26 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.I
 
     public void addButton(){
         // set the layout params for Button
-        RelativeLayout.LayoutParams buttonParam = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        Button myButton = new Button(this);  // create a new Button
-        myButton.setPadding(0,50,0,0);
-        myButton.setId(id);
-        id++;
-        Drawable img = getResources().getDrawable(R.drawable.add_button);
-        myButton.setCompoundDrawablesWithIntrinsicBounds(null, img,  null, null);
-        //myButton.setText("Add"); // set Text in the Button
-        myButton.setLayoutParams(buttonParam); // set defined layout params to Button
-        buttonParam.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        if(id>1) {
-            buttonParam.addRule(RelativeLayout.BELOW, id - 2); // set Button to the below of ImageView
-        }
-        relativeLayout.addView(myButton); // add Button in RelativeLayout
-        // perform setOnClickListener event
-        myButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                RelativeLayout.LayoutParams buttonParam = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT,
+                        RelativeLayout.LayoutParams.WRAP_CONTENT);
+                Button myButton = new Button(this);  // create a new Button
+                myButton.setPadding(0,50,0,0);
+                myButton.setId(id);
+                id++;
+                Drawable img = getResources().getDrawable(R.drawable.add_button);
+                myButton.setCompoundDrawablesWithIntrinsicBounds(null, img,  null, null);
+                //myButton.setText("Add"); // set Text in the Button
+                myButton.setLayoutParams(buttonParam); // set defined layout params to Button
+                buttonParam.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                if(id>1) {
+                    buttonParam.addRule(RelativeLayout.BELOW, id - 2); // set Button to the below of ImageView
+                }
+                relativeLayout.addView(myButton); // add Button in RelativeLayout
+                // perform setOnClickListener event
+                myButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                 // display a toast on Button click
                 Toast.makeText(getApplicationContext(), "Button "+id+ " Clicked", Toast.LENGTH_LONG).show();
                 addButton();
